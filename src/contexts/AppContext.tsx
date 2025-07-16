@@ -131,7 +131,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         ws.current.send(JSON.stringify({ type: 'UPDATE_CONTENT', payload: newContent }));
     } else {
         console.error('WebSocket is not connected.');
-        alert('Could not save changes. Please check your connection and refresh.');
+        // Fallback to local state update if WS is down, though changes won't persist on server
+        setContent(newContent); 
+        alert('Could not save changes to the server. Your changes are visible locally but may be lost on refresh.');
     }
   }, [content]);
 
