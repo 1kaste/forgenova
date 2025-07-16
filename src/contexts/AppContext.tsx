@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, useCallback, useRef } from 'react';
-import { SiteContent, AuthLevel, ThemeMode, ThemeOptions, ServiceCardData, SocialLink } from '../types';
+import { SiteContent, AuthLevel, ThemeMode, ServiceCardData, SocialLink } from '../types';
 import { DEFAULT_CONTENT, INITIAL_ADMIN_PASSWORD, MASTER_PASSWORD } from '../constants';
 
 interface AppContextType {
@@ -72,8 +72,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   useEffect(() => {
     const connect = () => {
         const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
-        const host = window.location.host;
-        // In dev, Vite proxy handles this. In prod, server and client are same origin.
+        const host = import.meta.env.DEV ? 'localhost:3001' : window.location.host;
         const wsUrl = `${protocol}://${host}`;
         
         ws.current = new WebSocket(wsUrl);

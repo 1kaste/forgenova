@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect, useRef, useCallback } from 'react';
+import React, { useContext, useState, useEffect, useRef } from 'react';
 import { AppContext } from '../contexts/AppContext';
 import { AuthLevel, SiteContent, ServiceCardData, ThemeOptions, ThemePalette, SocialLink } from '../types';
 import { PRESET_THEMES } from '../constants';
@@ -33,7 +33,10 @@ const TrashCanIcon = (props: React.SVGProps<SVGSVGElement>) => (
     </svg>
 );
 const RestoreIcon = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg {...props} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h5M20 20v-5h-5M19 9l-7 7-7-7" transform="rotate(180 12 12)" /><path strokeLinecap="round" strokeLinejoin="round" d="M3 12a9 9 0 109-9" /></svg>
+    <svg {...props} xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" >
+      <path d="M0 0h24v24H0z" fill="none"/>
+      <path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 13H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/>
+    </svg>
 );
 const TrashNavIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
@@ -196,6 +199,16 @@ const AddThemeCard = ({ onAdd }: { onAdd: () => void }) => (
     </button>
 );
 
+const highlightNewItem = (id: string, scroll: boolean = true) => {
+    setTimeout(() => {
+        const el = document.getElementById(id);
+        if (el) {
+            if (scroll) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            el.classList.add('new-item-highlight');
+            setTimeout(() => { el.classList.remove('new-item-highlight'); }, 2000);
+        }
+    }, 100);
+};
 
 // --- Main AdminPanel Component ---
 
@@ -257,17 +270,6 @@ const AdminPanel: React.FC = () => {
         }
     }, [editingThemeIndex]);
 
-    const highlightNewItem = useCallback((id: string, scroll: boolean = true) => {
-      setTimeout(() => {
-          const el = document.getElementById(id);
-          if (el) {
-              if (scroll) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-              el.classList.add('new-item-highlight');
-              setTimeout(() => { el.classList.remove('new-item-highlight'); }, 2000);
-          }
-      }, 100);
-    }, []);
-
     useEffect(() => {
         if (activeTab === 'services' && newlyAddedServiceId.current !== null && editedContent?.services) {
             const serviceExists = editedContent.services.some(s => s.id === newlyAddedServiceId.current);
@@ -276,7 +278,7 @@ const AdminPanel: React.FC = () => {
                 newlyAddedServiceId.current = null;
             }
         }
-    }, [editedContent?.services, activeTab, highlightNewItem]);
+    }, [editedContent?.services, activeTab]);
     
     useEffect(() => {
         if (activeTab === 'contact' && newlyAddedSocialId.current !== null && editedContent?.socials) {
@@ -286,7 +288,7 @@ const AdminPanel: React.FC = () => {
              newlyAddedSocialId.current = null;
            }
         }
-    }, [editedContent?.socials, activeTab, highlightNewItem]);
+    }, [editedContent?.socials, activeTab]);
 
     if (!context) return null;
     const { 
