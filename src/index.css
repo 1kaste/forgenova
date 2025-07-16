@@ -3,13 +3,12 @@
 @tailwind utilities;
 
 @layer base {
-  /*
+  /* Fallback for Rockwell if not loaded */
   @font-face {
     font-family: 'Rockwell';
-    src: local('Rockwell'), sans-serif;
+    src: local('Rockwell'); /* The 'sans-serif' fallback here was invalid CSS and broke the build. */
     font-weight: bold;
   }
-  */
   body {
       font-family: 'Montserrat', sans-serif;
   }
@@ -25,7 +24,7 @@
     to { transform: scale(1); opacity: 1; }
   }
   @keyframes highlight-fade {
-    from { background-color: hsla(var(--primary), 0.3); }
+    from { background-color: hsla(var(--primary) / 0.3); }
     to { background-color: transparent; }
   }
   @keyframes fade-in-out {
