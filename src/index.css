@@ -3,10 +3,9 @@
 @tailwind utilities;
 
 @layer base {
-  /* Fallback for Rockwell if not loaded */
   @font-face {
     font-family: 'Rockwell';
-    src: local('Rockwell'); /* The 'sans-serif' fallback here was invalid CSS and broke the build. */
+    src: local('Rockwell'); /* Corrected: Removed 'sans-serif' as it's not a valid src value */
     font-weight: bold;
   }
   body {
