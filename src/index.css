@@ -3,10 +3,9 @@
 @tailwind utilities;
 
 @layer base {
-  /* Fallback for Rockwell if not loaded */
   @font-face {
     font-family: 'Rockwell';
-    src: local('Rockwell'), sans-serif; /* A bit of a trick, but helps browsers */
+    src: local('Rockwell'), sans-serif;
     font-weight: bold;
   }
   body {
