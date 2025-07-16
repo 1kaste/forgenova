@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, useCallback, useRef } from 'react';
-import { SiteContent, AuthLevel, ThemeMode, ServiceCardData, SocialLink } from '../types';
+import { SiteContent, AuthLevel, ThemeMode /* Removed unused: ServiceCardData, SocialLink */ } from '../types';
 import { DEFAULT_CONTENT, INITIAL_ADMIN_PASSWORD, MASTER_PASSWORD } from '../constants';
 
 interface AppContextType {

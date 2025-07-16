@@ -190,11 +190,11 @@ const AdminPanel: React.FC = () => {
     const handleTrashAction = (
         action: 'move' | 'restore' | 'delete', 
         itemType: 'service' | 'theme' | 'social' | 'galleryImage', 
-        ids: any, 
+        ids: { itemId?: number, themeIndex?: number, serviceId?: number, imageIndex?: number }, // Added explicit type for ids
         itemName: string
     ) => {
       let message = '';
-      let performAction = () => {};
+      // Removed: let performAction = () => {}; // TS6133: 'performAction' is declared but its value is never read.
 
       switch(action) {
         case 'move':
@@ -204,13 +204,27 @@ const AdminPanel: React.FC = () => {
           // No confirmation needed for restore
           modifyContent(draft => {
             switch(itemType) {
-              case 'service': delete draft.services.find((s: ServiceCardData) => s.id === ids.itemId).deletedOn; break;
-              case 'theme': delete draft.themes[ids.themeIndex!].deletedOn; break;
-              case 'social': delete draft.socials.find((s: SocialLink) => s.id === ids.itemId).deletedOn; break;
+              case 'service':
+                  const serviceToRestore = draft.services.find((s: ServiceCardData) => s.id === ids.itemId);
+                  if (serviceToRestore) { // TS2532: Object is possibly 'undefined' - Added check
+                      delete serviceToRestore.deletedOn;
+                  }
+                  break;
+              case 'theme':
+                  if (ids.themeIndex !== undefined && draft.themes[ids.themeIndex]) { // TS2532: Object is possibly 'undefined' - Added check
+                      delete draft.themes[ids.themeIndex].deletedOn;
+                  }
+                  break;
+              case 'social':
+                  const socialToRestore = draft.socials.find((s: SocialLink) => s.id === ids.itemId);
+                  if (socialToRestore) { // TS2532: Object is possibly 'undefined' - Added check
+                      delete socialToRestore.deletedOn;
+                  }
+                  break;
               case 'galleryImage': {
                 const service = draft.services.find((s: ServiceCardData) => s.id === ids.serviceId);
-                if (service?.deletedGallery) {
-                  const imageToRestore = service.deletedGallery.splice(ids.imageIndex!, 1)[0];
+                if (service?.deletedGallery && ids.imageIndex !== undefined) { // TS2532: Object is possibly 'undefined' - Added checks
+                  const imageToRestore = service.deletedGallery.splice(ids.imageIndex, 1)[0];
                   service.gallery.push(imageToRestore.url);
                 }
                 break;
@@ -228,26 +242,39 @@ const AdminPanel: React.FC = () => {
             const now = Date.now();
             switch(itemType) {
               case 'service':
-                  if (action === 'move') draft.services.find((s: ServiceCardData) => s.id === ids.itemId).deletedOn = now;
-                  else draft.services = draft.services.filter((s: ServiceCardData) => s.id !== ids.itemId);
+                  if (action === 'move') {
+                      const serviceToMove = draft.services.find((s: ServiceCardData) => s.id === ids.itemId);
+                      if (serviceToMove) serviceToMove.deletedOn = now; // Added check
+                  } else {
+                      draft.services = draft.services.filter((s: ServiceCardData) => s.id !== ids.itemId);
+                  }
                   break;
               case 'theme':
-                  if (action === 'move') draft.themes[ids.themeIndex!].deletedOn = now;
-                  else draft.themes = draft.themes.filter((_: any, i: number) => i !== ids.themeIndex);
+                  if (action === 'move') {
+                      if (ids.themeIndex !== undefined && draft.themes[ids.themeIndex]) { // Added check
+                         draft.themes[ids.themeIndex].deletedOn = now;
+                      }
+                  } else {
+                      draft.themes = draft.themes.filter((_: any, i: number) => i !== ids.themeIndex);
+                  }
                   break;
               case 'social':
-                  if (action === 'move') draft.socials.find((s: SocialLink) => s.id === ids.itemId).deletedOn = now;
-                  else draft.socials = draft.socials.filter((s: SocialLink) => s.id !== ids.itemId);
+                  if (action === 'move') {
+                      const socialToMove = draft.socials.find((s: SocialLink) => s.id === ids.itemId);
+                      if (socialToMove) socialToMove.deletedOn = now; // Added check
+                  } else {
+                      draft.socials = draft.socials.filter((s: SocialLink) => s.id !== ids.itemId);
+                  }
                   break;
               case 'galleryImage': {
                 const service = draft.services.find((s: ServiceCardData) => s.id === ids.serviceId);
-                if (service) {
+                if (service && ids.imageIndex !== undefined) { // Added checks
                     if (action === 'move') {
-                        const imageToMove = service.gallery.splice(ids.imageIndex!, 1)[0];
+                        const imageToMove = service.gallery.splice(ids.imageIndex, 1)[0];
                         if (!service.deletedGallery) service.deletedGallery = [];
                         service.deletedGallery.push({ url: imageToMove, deletedOn: now });
                     } else if (service.deletedGallery) {
-                        service.deletedGallery.splice(ids.imageIndex!, 1);
+                        service.deletedGallery.splice(ids.imageIndex, 1);
                     }
                 }
                 break;
@@ -327,7 +354,7 @@ const AdminPanel: React.FC = () => {
     const handleAddSocialLink = () => {
         const newId = (content.socials.length > 0 ? Math.max(...content.socials.map(s => s.id)) : 0) + 1;
         newlyAddedItemId.current = {type: 'social', id: newId};
-        const defaultIcon = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/></svg>`;
+        const defaultIcon = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c3.596 0-5.192 1.583-5.192 4.615v3.385z"/></svg>`;
         const newLink: SocialLink = { id: newId, name: 'New Social', url: 'https://', iconUrl: defaultIcon };
         modifyContent(draft => { draft.socials.push(newLink); });
     };
@@ -350,8 +377,8 @@ const AdminPanel: React.FC = () => {
         let itemName = 'this item';
         if (itemType === 'theme') {
             const theme = content.themes[data.themeIndex];
-            if (theme.name === content.activeTheme) { alert("You cannot delete the currently active theme."); setIsOverTrash(false); setIsDragging(false); return; }
-            itemName = `the theme "${theme.name}"`;
+            if (theme?.name === content.activeTheme) { alert("You cannot delete the currently active theme."); setIsOverTrash(false); setIsDragging(false); return; } // Added ?. for safety
+            itemName = `the theme "${theme?.name}"`; // Added ?. for safety
         } else if (itemType === 'service') {
             const service = content.services.find(s => s.id === data.itemId);
             if (service) itemName = `the service "${service.title}"`;
@@ -513,13 +540,17 @@ const AdminPanel: React.FC = () => {
                                     theme={content.themes[editingThemeIndex]} 
                                     index={editingThemeIndex} 
                                     handleThemeNameChange={(idx, name) => modifyContent(draft => {
-                                        const oldName = draft.themes[idx].name;
-                                        draft.themes[idx].name = name;
-                                        if (draft.activeTheme === oldName) draft.activeTheme = name;
+                                        if (draft.themes[idx]) { // Added check
+                                            const oldName = draft.themes[idx].name;
+                                            draft.themes[idx].name = name;
+                                            if (draft.activeTheme === oldName) draft.activeTheme = name;
+                                        }
                                     })}
                                     handleThemePropChange={(idx, mode, prop, value) => modifyContent(draft => {
-                                        if (!draft.themes[idx][mode]) draft.themes[idx][mode] = {};
-                                        (draft.themes[idx][mode] as any)[prop] = value;
+                                        if (draft.themes[idx]) { // Added check
+                                            if (!draft.themes[idx][mode]) draft.themes[idx][mode] = {};
+                                            (draft.themes[idx][mode] as any)[prop] = value;
+                                        }
                                     })}
                                 />
                             </div>
@@ -562,13 +593,22 @@ const AdminPanel: React.FC = () => {
                                             <TrashIcon className="h-4 w-4" />
                                         </button>
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                            <Input label="Name" value={social.name} onChange={e => modifyContent(draft => { draft.socials.find(s=>s.id === social.id)!.name = e.target.value })} />
-                                            <Input label="URL" value={social.url} onChange={e => modifyContent(draft => { draft.socials.find(s=>s.id === social.id)!.url = e.target.value })} />
+                                            <Input label="Name" value={social.name} onChange={e => modifyContent(draft => { 
+                                                const targetSocial = draft.socials.find(s=>s.id === social.id);
+                                                if (targetSocial) targetSocial.name = e.target.value; // Added check
+                                            })} />
+                                            <Input label="URL" value={social.url} onChange={e => modifyContent(draft => { 
+                                                const targetSocial = draft.socials.find(s=>s.id === social.id);
+                                                if (targetSocial) targetSocial.url = e.target.value; // Added check
+                                            })} />
                                         </div>
                                         <div className="mt-4">
                                           <label className="block text-sm font-medium text-muted-foreground mb-1">Icon (URL or Upload)</label>
                                           <div className="flex items-center gap-2">
-                                              <input type="text" placeholder="Enter image URL or upload file" className="w-full p-2 border rounded bg-input text-foreground border-border" value={social.iconUrl} onChange={e => modifyContent(draft => { draft.socials.find(s=>s.id === social.id)!.iconUrl = e.target.value })} />
+                                              <input type="text" placeholder="Enter image URL or upload file" className="w-full p-2 border rounded bg-input text-foreground border-border" value={social.iconUrl} onChange={e => modifyContent(draft => { 
+                                                  const targetSocial = draft.socials.find(s=>s.id === social.id);
+                                                  if (targetSocial) targetSocial.iconUrl = e.target.value; // Added check
+                                              })} />
                                               <label className="flex-shrink-0 px-3 py-2 bg-input text-foreground rounded-lg cursor-pointer hover:bg-accent hover:text-accent-foreground text-sm font-medium">
                                                   <span>Upload</span>
                                                   <input type='file' className="hidden" accept="image/svg+xml,image/png,image/jpeg" onChange={e => handleSocialIconUpload(e, social.id)} />
@@ -660,10 +700,22 @@ const AdminPanel: React.FC = () => {
                             <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
                                 <div className="lg:col-span-3 space-y-6">
                                     <h5 className="text-lg font-semibold text-muted-foreground -mb-2">Service Details</h5>
-                                    <Input label="Title" value={service.title} onChange={e => modifyContent(draft => { draft.services.find(s=>s.id === service.id)!.title = e.target.value })} />
-                                    <Input label="Card Image URL" value={service.image} onChange={e => modifyContent(draft => { draft.services.find(s=>s.id === service.id)!.image = e.target.value })} />
-                                    <Textarea label="Short Description (Card)" value={service.description} onChange={e => modifyContent(draft => { draft.services.find(s=>s.id === service.id)!.description = e.target.value })} />
-                                    <Textarea label="Long Description (Detail Page)" value={service.longDescription} onChange={e => modifyContent(draft => { draft.services.find(s=>s.id === service.id)!.longDescription = e.target.value })} />
+                                    <Input label="Title" value={service.title} onChange={e => modifyContent(draft => { 
+                                        const targetService = draft.services.find(s=>s.id === service.id);
+                                        if (targetService) targetService.title = e.target.value; // Added check
+                                    })} />
+                                    <Input label="Card Image URL" value={service.image} onChange={e => modifyContent(draft => { 
+                                        const targetService = draft.services.find(s=>s.id === service.id);
+                                        if (targetService) targetService.image = e.target.value; // Added check
+                                    })} />
+                                    <Textarea label="Short Description (Card)" value={service.description} onChange={e => modifyContent(draft => { 
+                                        const targetService = draft.services.find(s=>s.id === service.id);
+                                        if (targetService) targetService.description = e.target.value; // Added check
+                                    })} />
+                                    <Textarea label="Long Description (Detail Page)" value={service.longDescription} onChange={e => modifyContent(draft => { 
+                                        const targetService = draft.services.find(s=>s.id === service.id);
+                                        if (targetService) targetService.longDescription = e.target.value; // Added check
+                                    })} />
                                 </div>
                                 <div className="lg:col-span-2 space-y-4">
                                     <h5 className="text-lg font-semibold text-muted-foreground">Image Gallery</h5>
