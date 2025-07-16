@@ -1,4 +1,3 @@
-
 import React, { createContext, useState, useEffect, useCallback, useRef } from 'react';
 import { SiteContent, AuthLevel, ThemeMode, ServiceCardData, SocialLink } from '../types';
 import { DEFAULT_CONTENT, INITIAL_ADMIN_PASSWORD, MASTER_PASSWORD } from '../constants';
@@ -28,9 +27,6 @@ interface AppContextType {
   setShowAboutPage: (show: boolean) => void;
   isLightboxOpen: boolean;
   setIsLightboxOpen: (isOpen: boolean) => void;
-  moveItemToTrash: (itemType: 'service' | 'theme' | 'social' | 'galleryImage', ids: { serviceId?: number; imageIndex?: number; itemId?: number; themeIndex?: number; }) => void;
-  restoreItemFromTrash: (itemType: 'service' | 'theme' | 'social' | 'galleryImage', ids: { serviceId?: number; imageIndex?: number; itemId?: number; themeIndex?: number; }) => void;
-  permanentlyDeleteItemFromTrash: (itemType: 'service' | 'theme' | 'social' | 'galleryImage', ids: { serviceId?: number; imageIndex?: number; itemId?: number; themeIndex?: number; }) => void;
 }
 
 export const AppContext = createContext<AppContextType | null>(null);
@@ -126,21 +122,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     localStorage.setItem('inactivityTimeout', JSON.stringify(inactivityTimeout));
   }, [inactivityTimeout]);
 
-  const modifyAndBroadcast = useCallback((modificationFn: (c: SiteContent) => SiteContent) => {
-    const newContent = modificationFn(content);
+  const updateContent = useCallback((newContent: SiteContent) => {
     setContent(newContent); // Optimistic update
     if (ws.current && ws.current.readyState === WebSocket.OPEN) {
         ws.current.send(JSON.stringify({ type: 'UPDATE_CONTENT', payload: newContent }));
     } else {
-        console.error('WebSocket is not connected.');
-        // Fallback to local state update if WS is down, though changes won't persist on server
+        console.error('WebSocket is not connected. Changes may not be saved.');
         alert('Could not save changes to the server. Your changes are visible locally but may be lost on refresh.');
     }
-  }, [content]);
-
-  const updateContent = (newContent: SiteContent) => {
-     modifyAndBroadcast(() => newContent);
-  };
+  }, []);
 
   const setThemeMode = (newTheme: ThemeMode) => setThemeModeState(newTheme);
 
@@ -168,86 +158,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       window.removeEventListener('click', resetTimer);
     };
   }, [authLevel, inactivityTimeout, logout]);
-  
-  const moveItemToTrash = useCallback((itemType: 'service' | 'theme' | 'social' | 'galleryImage', ids: { serviceId?: number; imageIndex?: number; itemId?: number, themeIndex?: number }) => {
-    modifyAndBroadcast(currentContent => {
-        const newContent = JSON.parse(JSON.stringify(currentContent));
-        const now = Date.now();
-        switch (itemType) {
-            case 'service':
-                newContent.services.find((s: ServiceCardData) => s.id === ids.itemId).deletedOn = now;
-                break;
-            case 'theme':
-                newContent.themes[ids.themeIndex!].deletedOn = now;
-                break;
-            case 'social':
-                newContent.socials.find((s: SocialLink) => s.id === ids.itemId).deletedOn = now;
-                break;
-            case 'galleryImage': {
-                const service = newContent.services.find((s: ServiceCardData) => s.id === ids.serviceId);
-                if (service) {
-                    const imageToMove = service.gallery.splice(ids.imageIndex!, 1)[0];
-                    if (!service.deletedGallery) service.deletedGallery = [];
-                    service.deletedGallery.push({ url: imageToMove, deletedOn: now });
-                }
-                break;
-            }
-        }
-        return newContent;
-    });
-  }, [modifyAndBroadcast]);
-
-  const restoreItemFromTrash = useCallback((itemType: 'service' | 'theme' | 'social' | 'galleryImage', ids: { serviceId?: number; imageIndex?: number; itemId?: number, themeIndex?: number }) => {
-    modifyAndBroadcast(currentContent => {
-        const newContent = JSON.parse(JSON.stringify(currentContent));
-         switch (itemType) {
-            case 'service':
-                delete newContent.services.find((s: ServiceCardData) => s.id === ids.itemId).deletedOn;
-                break;
-            case 'theme':
-                delete newContent.themes[ids.themeIndex!].deletedOn;
-                break;
-            case 'social':
-                delete newContent.socials.find((s: SocialLink) => s.id === ids.itemId).deletedOn;
-                break;
-            case 'galleryImage': {
-                const service = newContent.services.find((s: ServiceCardData) => s.id === ids.serviceId);
-                 if (service && service.deletedGallery) {
-                    const imageToRestore = service.deletedGallery.splice(ids.imageIndex!, 1)[0];
-                    service.gallery.push(imageToRestore.url);
-                 }
-                break;
-            }
-        }
-        return newContent;
-    });
-  }, [modifyAndBroadcast]);
-  
-  const permanentlyDeleteItemFromTrash = useCallback((itemType: 'service' | 'theme' | 'social' | 'galleryImage', ids: { serviceId?: number; imageIndex?: number; itemId?: number, themeIndex?: number }) => {
-    modifyAndBroadcast(currentContent => {
-        const newContent = JSON.parse(JSON.stringify(currentContent));
-        switch (itemType) {
-            case 'service':
-                newContent.services = newContent.services.filter((s: ServiceCardData) => s.id !== ids.itemId);
-                break;
-            case 'theme':
-                newContent.themes = newContent.themes.filter((_: any, i: number) => i !== ids.themeIndex);
-                break;
-            case 'social':
-                newContent.socials = newContent.socials.filter((s: SocialLink) => s.id !== ids.itemId);
-                break;
-            case 'galleryImage': {
-                const service = newContent.services.find((s: ServiceCardData) => s.id === ids.serviceId);
-                if (service && service.deletedGallery) {
-                   service.deletedGallery.splice(ids.imageIndex!, 1);
-                }
-                break;
-            }
-        }
-        return newContent;
-    });
-  }, [modifyAndBroadcast]);
-
 
   const setActiveServiceId = useCallback((id: number | null) => {
     _setActiveServiceId(id);
@@ -324,9 +234,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setShowAboutPage,
         isLightboxOpen,
         setIsLightboxOpen,
-        moveItemToTrash,
-        restoreItemFromTrash,
-        permanentlyDeleteItemFromTrash,
       }}>
       {children}
     </AppContext.Provider>

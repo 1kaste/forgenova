@@ -1,4 +1,3 @@
-
 import React, { useContext } from 'react';
 import { AppContext } from '../contexts/AppContext';
 import { PRESET_THEMES } from '../constants';

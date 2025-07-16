@@ -1,4 +1,3 @@
-
 import React, { useContext, useState } from 'react';
 import { AppContext } from '../contexts/AppContext';
 import ImageLightbox from './ImageLightbox';

@@ -3,11 +3,6 @@
 @tailwind utilities;
 
 @layer base {
-  @font-face {
-    font-family: 'Rockwell';
-    src: local('Rockwell'); /* Corrected: Removed 'sans-serif' as it's not a valid src value */
-    font-weight: bold;
-  }
   body {
       font-family: 'Montserrat', sans-serif;
   }
