@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* Fallback for Rockwell if not loaded */
+  @font-face {
+    font-family: 'Rockwell';
+    src: local('Rockwell'), sans-serif; /* A bit of a trick, but helps browsers */
+    font-weight: bold;
+  }
+  body {
+      font-family: 'Montserrat', sans-serif;
+  }
+}
+
+@layer components {
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes zoom-in {
+    from { transform: scale(0.95); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  @keyframes highlight-fade {
+    from { background-color: hsla(var(--primary), 0.3); }
+    to { background-color: transparent; }
+  }
+  @keyframes fade-in-out {
+    0% { opacity: 0; transform: translateY(1rem); }
+    15% { opacity: 1; transform: translateY(0); }
+    85% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(1rem); }
+  }
+}
+
+@layer utilities {
+  .animate-fade-in {
+    animation: fade-in 0.3s ease-out forwards;
+  }
+  .animate-zoom-in {
+    animation: zoom-in 0.3s ease-out forwards;
+  }
+  .new-item-highlight {
+    animation: highlight-fade 2s ease-out forwards;
+  }
+  .animate-fade-in-out {
+    animation: fade-in-out 3s ease-in-out forwards;
+  }
+}

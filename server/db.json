@@ -1,0 +1,507 @@
+{
+  "logo": {
+    "light": "",
+    "dark": ""
+  },
+  "companyName": "FORGE NOVA",
+  "contact": {
+    "phone": "1-800-555-STEEL",
+    "email": "contact@forgenova.com",
+    "address": "123 Industrial Way, Metropolis, USA 12345"
+  },
+  "socials": [
+    {
+      "id": 1,
+      "name": "Facebook",
+      "url": "https://facebook.com",
+      "iconUrl": "data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z\"/></svg>"
+    },
+    {
+      "id": 2,
+      "name": "Instagram",
+      "url": "https://instagram.com",
+      "iconUrl": "data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4s1.791-4 4-4 4 1.79 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44 1.441-.645 1.441-1.44-.645-1.44-1.441-1.44z\"/></svg>"
+    },
+    {
+      "id": 3,
+      "name": "YouTube",
+      "url": "https://youtube.com",
+      "iconUrl": "data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z\"/></svg>"
+    },
+    {
+      "id": 4,
+      "name": "X / Twitter",
+      "url": "https://x.com",
+      "iconUrl": "data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z\"/></svg>"
+    },
+    {
+      "id": 5,
+      "name": "LinkedIn",
+      "url": "https://linkedin.com",
+      "iconUrl": "data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z\"/></svg>"
+    }
+  ],
+  "hero": {
+    "image": "https://images.unsplash.com/photo-1599028422489-ab0b516b9a88?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "heading": "FORGE NOVA",
+    "subheading": "We specialize in the design, fabrication, and installation of high-quality steel solutions tailored to your needs. With precision craftsmanship and a commitment to durability, we deliver exceptional results across residential, commercial, and industrial projects."
+  },
+  "services": [
+    {
+      "id": 1,
+      "image": "https://images.unsplash.com/photo-1631022396442-43f549042c3b?q=80&w=2574&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "title": "Steel Gates",
+      "description": "Custom steel gates that combine security, style, and strength.",
+      "longDescription": "We design and build custom steel gates that provide an unparalleled combination of security, style, and strength. Our gates are fabricated to your exact specifications, ensuring a perfect fit and a design that complements your property's architecture. From ornate, classic designs to sleek, modern styles, we use only the highest-grade steel for maximum durability and longevity.",
+      "gallery": [
+        "https://images.unsplash.com/photo-1599691883838-b4b73429386c?q=80&w=2574&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        "https://images.unsplash.com/photo-1631022460212-9c1743c34743?q=80&w=2574&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        "https://images.unsplash.com/photo-1524357982210-928eac4533d1?q=80&w=2574&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        "https://images.unsplash.com/photo-1629810843689-8d7455d8525b?q=80&w=2574&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        "https://picsum.photos/800/600?random=15",
+        "https://picsum.photos/800/600?random=16"
+      ]
+    },
+    {
+      "id": 2,
+      "image": "https://images.unsplash.com/photo-1574169208507-84376144848b?q=80&w=2679&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "title": "Steel Doors",
+      "description": "Secure, weather-resistant steel doors for excellent protection.",
+      "longDescription": "Our team fabricates secure, weather-resistant steel doors that provide excellent protection against intruders and the elements. Engineered for performance, our steel doors offer superior insulation and soundproofing. Available in a variety of finishes and styles, they are an ideal choice for both commercial and residential applications where security is paramount.",
+      "gallery": [
+        "https://picsum.photos/800/600?random=21",
+        "https://picsum.photos/800/600?random=22",
+        "https://picsum.photos/800/600?random=23",
+        "https://picsum.photos/800/600?random=24",
+        "https://picsum.photos/800/600?random=25",
+        "https://picsum.photos/800/600?random=26"
+      ]
+    },
+    {
+      "id": 3,
+      "image": "https://images.unsplash.com/photo-1526310242159-7b3393967a84?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "title": "Steel Windows",
+      "description": "Durable steel-framed windows with a sleek, modern aesthetic.",
+      "longDescription": "Experience unmatched durability and timeless style with our steel-framed windows. Their slender profiles allow for larger glass panes, maximizing natural light and offering a sleek, modern aesthetic. Perfect for high-end residential and commercial projects, our steel windows are built to last a lifetime with minimal maintenance.",
+      "gallery": [
+        "https://picsum.photos/800/600?random=31",
+        "https://picsum.photos/800/600?random=32",
+        "https://picsum.photos/800/600?random=33",
+        "https://picsum.photos/800/600?random=34",
+        "https://picsum.photos/800/600?random=35",
+        "https://picsum.photos/800/600?random=36"
+      ]
+    },
+    {
+      "id": 4,
+      "image": "https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "title": "Steel Balconies & Railings",
+      "description": "Elegant and sturdy steel balconies and railing systems.",
+      "longDescription": "We create elegant and sturdy steel balconies and railing systems that enhance safety without sacrificing views. Our custom designs range from simple and functional to intricate and decorative, all precision-engineered to meet building codes and client expectations. Elevate your property with our beautiful, long-lasting steelwork.",
+      "gallery": [
+        "https://picsum.photos/800/600?random=41",
+        "https://picsum.photos/800/600?random=42",
+        "https://picsum.photos/800/600?random=43",
+        "https://picsum.photos/800/600?random=44",
+        "https://picsum.photos/800/600?random=45",
+        "https://picsum.photos/800/600?random=46"
+      ]
+    },
+    {
+      "id": 5,
+      "image": "https://images.unsplash.com/photo-1542882294-295418184206?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "title": "Steel Structures",
+      "description": "From frames to full steel buildings, we fabricate structural solutions.",
+      "longDescription": "FORGE NOVA is your trusted partner for structural steel fabrication. From robust building frames to complete pre-engineered steel buildings, our solutions provide the backbone for commercial, industrial, and agricultural projects. We adhere to the strictest industry standards to deliver structures of exceptional strength and integrity.",
+      "gallery": [
+        "https://picsum.photos/800/600?random=51",
+        "https://picsum.photos/800/600?random=52",
+        "https://picsum.photos/800/600?random=53",
+        "https://picsum.photos/800/600?random=54",
+        "https://picsum.photos/800/600?random=55",
+        "https://picsum.photos/800/600?random=56"
+      ]
+    },
+    {
+      "id": 6,
+      "image": "https://images.unsplash.com/photo-1506784983877-45594efa4c85?q=80&w=2668&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "title": "Grill Staircases",
+      "description": "Custom grill staircases engineered for function and visual appeal.",
+      "longDescription": "Our custom grill staircases are engineered for both functionality and high visual appeal. Combining steel with other materials like wood or glass, we create stunning focal points for any interior or exterior space. Each staircase is a testament to our craftsmanship, designed for safety, durability, and a unique aesthetic.",
+      "gallery": [
+        "https://picsum.photos/800/600?random=61",
+        "https://picsum.photos/800/600?random=62",
+        "https://picsum.photos/800/600?random=63",
+        "https://picsum.photos/800/600?random=64",
+        "https://picsum.photos/800/600?random=65",
+        "https://picsum.photos/800/600?random=66"
+      ]
+    }
+  ],
+  "footer": {
+    "about": "FORGE NOVA is a leader in steel fabrication, providing top-tier solutions with unmatched precision and dedication to quality.",
+    "credit": "© 2025 FORGE NOVA | Website by A World-Class React Engineer",
+    "creditLink": ""
+  },
+  "themes": [
+    {
+      "name": "Default",
+      "light": {
+        "background": "#FFFFFF",
+        "foreground": "#0F172A",
+        "card": "#F8FAFC",
+        "card-foreground": "#0F172A",
+        "muted": "#F1F5F9",
+        "muted-foreground": "#64748B",
+        "primary": "#CC5500",
+        "primary-foreground": "#FFFFFF",
+        "secondary": "#333333",
+        "secondary-foreground": "#FFFFFF",
+        "accent": "#FFD700",
+        "accent-foreground": "#0F172A",
+        "border": "#E2E8F0",
+        "input": "#E2E8F0",
+        "ring": "#CC5500",
+        "header-top-bar-background": "#333333",
+        "header-top-bar-foreground": "#FFFFFF",
+        "header-main-background": "#FFFFFF",
+        "header-main-foreground": "#0F172A",
+        "footer-background": "#333333",
+        "footer-foreground": "#FFFFFF",
+        "hero-foreground": "#FFFFFF",
+        "hero-overlay": "#000000"
+      },
+      "dark": {
+        "background": "#000000",
+        "foreground": "#F8FAFC",
+        "card": "#1E293B",
+        "card-foreground": "#F8FAFC",
+        "muted": "#0F172A",
+        "muted-foreground": "#94A3B8",
+        "primary": "#CC5500",
+        "primary-foreground": "#FFFFFF",
+        "secondary": "#333333",
+        "secondary-foreground": "#F8FAFC",
+        "accent": "#FFD700",
+        "accent-foreground": "#0F172A",
+        "border": "#334155",
+        "input": "#334155",
+        "ring": "#FFD700",
+        "header-top-bar-background": "#333333",
+        "header-top-bar-foreground": "#F8FAFC",
+        "header-main-background": "#000000",
+        "header-main-foreground": "#F8FAFC",
+        "footer-background": "#1E293B",
+        "footer-foreground": "#F8FAFC",
+        "hero-foreground": "#FFFFFF",
+        "hero-overlay": "#000000"
+      }
+    },
+    {
+      "name": "Oceanic Deep",
+      "light": {
+        "primary": "#007A7A",
+        "primary-foreground": "#FFFFFF",
+        "secondary": "#003E3E",
+        "secondary-foreground": "#E6F5F5",
+        "accent": "#99D6D6",
+        "accent-foreground": "#003E3E",
+        "background": "#E6F5F5",
+        "foreground": "#001A1A",
+        "header-top-bar-background": "#003E3E",
+        "header-top-bar-foreground": "#E6F5F5",
+        "footer-background": "#002929"
+      },
+      "dark": {
+        "background": "#001A1A",
+        "foreground": "#E6F5F5",
+        "card": "#002929",
+        "card-foreground": "#E6F5F5",
+        "primary": "#00A3A3",
+        "primary-foreground": "#002929",
+        "secondary": "#003E3E",
+        "secondary-foreground": "#E6F5F5",
+        "accent": "#33CCCC",
+        "accent-foreground": "#001A1A",
+        "header-top-bar-background": "#003E3E",
+        "header-top-bar-foreground": "#E6F5F5",
+        "header-main-background": "#002929",
+        "footer-background": "#002929",
+        "hero-foreground": "#FFFFFF",
+        "hero-overlay": "#001A1A"
+      }
+    },
+    {
+      "name": "Solar Flare",
+      "light": {
+        "primary": "#D94A00",
+        "primary-foreground": "#FFFFFF",
+        "secondary": "#4D1B00",
+        "secondary-foreground": "#FFFFFF",
+        "accent": "#FFC700",
+        "accent-foreground": "#4D1B00",
+        "background": "#FFF8E1",
+        "foreground": "#4D1B00",
+        "header-top-bar-background": "#4D1B00",
+        "header-top-bar-foreground": "#FFFFFF",
+        "footer-background": "#331200"
+      },
+      "dark": {
+        "background": "#1A0900",
+        "foreground": "#FFE4CC",
+        "card": "#331200",
+        "card-foreground": "#FFE4CC",
+        "primary": "#FF6F00",
+        "primary-foreground": "#000000",
+        "secondary": "#4D1B00",
+        "secondary-foreground": "#FFE4CC",
+        "accent": "#FFD633",
+        "accent-foreground": "#1A0900",
+        "header-top-bar-background": "#4D1B00",
+        "header-top-bar-foreground": "#FFE4CC",
+        "header-main-background": "#331200",
+        "footer-background": "#331200",
+        "hero-foreground": "#FFFFFF",
+        "hero-overlay": "#1A0900"
+      }
+    },
+    {
+      "name": "Emerald Ash",
+      "light": {
+        "background": "#F0F5F1",
+        "foreground": "#0A1E11",
+        "primary": "#0D9488",
+        "primary-foreground": "#FFFFFF",
+        "secondary": "#4A5568",
+        "secondary-foreground": "#FFFFFF",
+        "accent": "#FBBF24",
+        "accent-foreground": "#0A1E11",
+        "card": "#FFFFFF",
+        "border": "#D1D5DB",
+        "header-top-bar-background": "#2d3748",
+        "header-top-bar-foreground": "#F0F5F1",
+        "footer-background": "#2d3748"
+      },
+      "dark": {
+        "background": "#040C0A",
+        "foreground": "#E2E8F0",
+        "primary": "#14B8A6",
+        "primary-foreground": "#040C0A",
+        "secondary": "#334155",
+        "secondary-foreground": "#E2E8F0",
+        "accent": "#FCD34D",
+        "accent-foreground": "#040C0A",
+        "card": "#0A1E11",
+        "border": "#334155",
+        "header-top-bar-background": "#1e293b",
+        "header-top-bar-foreground": "#E2E8F0",
+        "header-main-background": "#0A1E11",
+        "footer-background": "#0A1E11",
+        "hero-overlay": "#040C0A"
+      }
+    },
+    {
+      "name": "Crimson Night",
+      "light": {
+        "background": "#FEF2F2",
+        "foreground": "#1F2937",
+        "primary": "#DC2626",
+        "primary-foreground": "#FFFFFF",
+        "secondary": "#374151",
+        "secondary-foreground": "#FFFFFF",
+        "accent": "#F87171",
+        "accent-foreground": "#1F2937",
+        "header-top-bar-background": "#1F2937",
+        "header-top-bar-foreground": "#FEF2F2",
+        "footer-background": "#1F2937"
+      },
+      "dark": {
+        "background": "#111827",
+        "foreground": "#F9FAFB",
+        "primary": "#EF4444",
+        "primary-foreground": "#F9FAFB",
+        "secondary": "#4B5563",
+        "secondary-foreground": "#F9FAFB",
+        "accent": "#FCA5A5",
+        "accent-foreground": "#111827",
+        "card": "#1F2937",
+        "border": "#4B5563",
+        "header-top-bar-background": "#4B5563",
+        "header-top-bar-foreground": "#F9FAFB",
+        "header-main-background": "#1F2937",
+        "footer-background": "#1F2937",
+        "hero-overlay": "#111827"
+      }
+    },
+    {
+      "name": "Cobalt Business",
+      "light": {
+        "background": "#EFF6FF",
+        "foreground": "#1E3A8A",
+        "primary": "#2563EB",
+        "primary-foreground": "#FFFFFF",
+        "secondary": "#475569",
+        "secondary-foreground": "#FFFFFF",
+        "accent": "#93C5FD",
+        "accent-foreground": "#1E3A8A",
+        "card": "#FFFFFF",
+        "header-top-bar-background": "#1E3A8A",
+        "header-top-bar-foreground": "#EFF6FF",
+        "footer-background": "#1E3A8A"
+      },
+      "dark": {
+        "background": "#1E293B",
+        "foreground": "#E0E7FF",
+        "primary": "#3B82F6",
+        "primary-foreground": "#FFFFFF",
+        "secondary": "#334155",
+        "secondary-foreground": "#E0E7FF",
+        "accent": "#60A5FA",
+        "accent-foreground": "#1E293B",
+        "card": "#293548",
+        "header-top-bar-background": "#334155",
+        "header-top-bar-foreground": "#E0E7FF",
+        "header-main-background": "#293548",
+        "footer-background": "#293548",
+        "hero-overlay": "#1E293B"
+      }
+    },
+    {
+      "name": "Vintage Paper",
+      "light": {
+        "background": "#FDF6E3",
+        "foreground": "#657B83",
+        "primary": "#B58900",
+        "primary-foreground": "#FDF6E3",
+        "secondary": "#859900",
+        "secondary-foreground": "#FDF6E3",
+        "accent": "#268BD2",
+        "accent-foreground": "#FDF6E3",
+        "card": "#F5EFDB",
+        "header-top-bar-background": "#586E75",
+        "header-top-bar-foreground": "#FDF6E3",
+        "footer-background": "#E6E0C6",
+        "footer-foreground": "#586E75"
+      },
+      "dark": {
+        "background": "#002B36",
+        "foreground": "#839496",
+        "primary": "#CB4B16",
+        "primary-foreground": "#FDF6E3",
+        "secondary": "#586E75",
+        "secondary-foreground": "#FDF6E3",
+        "accent": "#2AA198",
+        "accent-foreground": "#002B36",
+        "card": "#073642",
+        "header-top-bar-background": "#586E75",
+        "header-top-bar-foreground": "#FDF6E3",
+        "header-main-background": "#073642",
+        "footer-background": "#073642",
+        "hero-overlay": "#002B36"
+      }
+    },
+    {
+      "name": "Sakura Dream",
+      "light": {
+        "background": "#FFF5F7",
+        "foreground": "#5B21B6",
+        "primary": "#DB2777",
+        "primary-foreground": "#FFFFFF",
+        "secondary": "#9CA3AF",
+        "secondary-foreground": "#FFFFFF",
+        "accent": "#FBCFE8",
+        "accent-foreground": "#9D174D",
+        "card": "#FFFFFF",
+        "header-top-bar-background": "#86198f",
+        "header-top-bar-foreground": "#FFF5F7",
+        "footer-background": "#fdf2f8",
+        "footer-foreground": "#5B21B6"
+      },
+      "dark": {
+        "background": "#2E1065",
+        "foreground": "#FCE7F3",
+        "primary": "#F472B6",
+        "primary-foreground": "#2E1065",
+        "secondary": "#4C1D95",
+        "secondary-foreground": "#FCE7F3",
+        "accent": "#F9A8D4",
+        "accent-foreground": "#2E1065",
+        "card": "#3B0764",
+        "header-top-bar-background": "#4C1D95",
+        "header-top-bar-foreground": "#FCE7F3",
+        "header-main-background": "#3B0764",
+        "footer-background": "#3B0764",
+        "hero-overlay": "#2E1065"
+      }
+    },
+    {
+      "name": "Monochrome",
+      "light": {
+        "background": "#FFFFFF",
+        "foreground": "#000000",
+        "primary": "#111111",
+        "primary-foreground": "#FFFFFF",
+        "secondary": "#444444",
+        "secondary-foreground": "#FFFFFF",
+        "accent": "#777777",
+        "accent-foreground": "#FFFFFF",
+        "card": "#F5F5F5",
+        "card-foreground": "#000000",
+        "header-top-bar-background": "#444444",
+        "header-top-bar-foreground": "#FFFFFF",
+        "footer-background": "#111111"
+      },
+      "dark": {
+        "background": "#000000",
+        "foreground": "#FFFFFF",
+        "primary": "#DDDDDD",
+        "primary-foreground": "#000000",
+        "secondary": "#999999",
+        "secondary-foreground": "#000000",
+        "accent": "#555555",
+        "accent-foreground": "#FFFFFF",
+        "card": "#1A1A1A",
+        "card-foreground": "#FFFFFF",
+        "header-top-bar-background": "#333333",
+        "header-top-bar-foreground": "#FFFFFF",
+        "header-main-background": "#1A1A1A",
+        "footer-background": "#1A1A1A",
+        "hero-overlay": "#000000"
+      }
+    },
+    {
+      "name": "Desert Mirage",
+      "light": {
+        "background": "#FFFBEB",
+        "foreground": "#422006",
+        "primary": "#D97706",
+        "primary-foreground": "#FFFFFF",
+        "secondary": "#78350F",
+        "secondary-foreground": "#FFFFFF",
+        "accent": "#F59E0B",
+        "accent-foreground": "#422006",
+        "card": "#FEF3C7",
+        "header-top-bar-background": "#78350F",
+        "header-top-bar-foreground": "#FFFBEB",
+        "footer-background": "#78350F"
+      },
+      "dark": {
+        "background": "#291501",
+        "foreground": "#FEF3C7",
+        "primary": "#FBBF24",
+        "primary-foreground": "#422006",
+        "secondary": "#9A3412",
+        "secondary-foreground": "#FEF3C7",
+        "accent": "#FDE68A",
+        "accent-foreground": "#422006",
+        "card": "#422006",
+        "header-top-bar-background": "#78350F",
+        "header-top-bar-foreground": "#FEF3C7",
+        "header-main-background": "#422006",
+        "footer-background": "#422006",
+        "hero-overlay": "#291501"
+      }
+    }
+  ],
+  "activeTheme": "Default"
+}
