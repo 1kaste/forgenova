@@ -1,3 +1,4 @@
+
 import React, { createContext, useState, useEffect, useCallback, useRef } from 'react';
 import { SiteContent, AuthLevel, ThemeMode, ServiceCardData, SocialLink } from '../types';
 import { DEFAULT_CONTENT, INITIAL_ADMIN_PASSWORD, MASTER_PASSWORD } from '../constants';
@@ -127,12 +128,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const modifyAndBroadcast = useCallback((modificationFn: (c: SiteContent) => SiteContent) => {
     const newContent = modificationFn(content);
+    setContent(newContent); // Optimistic update
     if (ws.current && ws.current.readyState === WebSocket.OPEN) {
         ws.current.send(JSON.stringify({ type: 'UPDATE_CONTENT', payload: newContent }));
     } else {
         console.error('WebSocket is not connected.');
         // Fallback to local state update if WS is down, though changes won't persist on server
-        setContent(newContent); 
         alert('Could not save changes to the server. Your changes are visible locally but may be lost on refresh.');
     }
   }, [content]);
@@ -184,9 +185,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
                 break;
             case 'galleryImage': {
                 const service = newContent.services.find((s: ServiceCardData) => s.id === ids.serviceId);
-                const imageToMove = service.gallery.splice(ids.imageIndex!, 1)[0];
-                if (!service.deletedGallery) service.deletedGallery = [];
-                service.deletedGallery.push({ url: imageToMove, deletedOn: now });
+                if (service) {
+                    const imageToMove = service.gallery.splice(ids.imageIndex!, 1)[0];
+                    if (!service.deletedGallery) service.deletedGallery = [];
+                    service.deletedGallery.push({ url: imageToMove, deletedOn: now });
+                }
                 break;
             }
         }
@@ -209,8 +212,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
                 break;
             case 'galleryImage': {
                 const service = newContent.services.find((s: ServiceCardData) => s.id === ids.serviceId);
-                const imageToRestore = service.deletedGallery.splice(ids.imageIndex!, 1)[0];
-                service.gallery.push(imageToRestore.url);
+                 if (service && service.deletedGallery) {
+                    const imageToRestore = service.deletedGallery.splice(ids.imageIndex!, 1)[0];
+                    service.gallery.push(imageToRestore.url);
+                 }
                 break;
             }
         }
@@ -233,7 +238,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
                 break;
             case 'galleryImage': {
                 const service = newContent.services.find((s: ServiceCardData) => s.id === ids.serviceId);
-                service.deletedGallery.splice(ids.imageIndex!, 1);
+                if (service && service.deletedGallery) {
+                   service.deletedGallery.splice(ids.imageIndex!, 1);
+                }
                 break;
             }
         }

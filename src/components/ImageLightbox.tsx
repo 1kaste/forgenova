@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 
 interface ImageLightboxProps {
@@ -12,13 +13,13 @@ const ImageLightbox: React.FC<ImageLightboxProps> = ({ images, startIndex, onClo
   const wheelTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const goToNext = useCallback(() => {
-    if (isAnimating) return;
+    if (isAnimating || images.length <= 1) return;
     setIsAnimating(true);
     setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
   }, [images.length, isAnimating]);
 
   const goToPrevious = useCallback(() => {
-    if (isAnimating) return;
+    if (isAnimating || images.length <= 1) return;
     setIsAnimating(true);
     setCurrentIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length);
   }, [images.length, isAnimating]);
@@ -84,13 +85,24 @@ const ImageLightbox: React.FC<ImageLightboxProps> = ({ images, startIndex, onClo
       </button>
 
       <div className="relative w-full h-full flex items-center justify-center" onClick={e => e.stopPropagation()}>
-        <button
-          className="absolute left-0 md:left-10 text-white p-4 text-4xl hover:bg-white/10 rounded-full transition-all duration-300 z-[101]"
-          onClick={goToPrevious}
-          aria-label="Previous image"
-        >
-          &#8249;
-        </button>
+        {images.length > 1 && (
+          <>
+            <button
+              className="absolute left-0 md:left-10 text-white p-4 text-4xl hover:bg-white/10 rounded-full transition-all duration-300 z-[101]"
+              onClick={goToPrevious}
+              aria-label="Previous image"
+            >
+              &#8249;
+            </button>
+            <button
+              className="absolute right-0 md:right-10 text-white p-4 text-4xl hover:bg-white/10 rounded-full transition-all duration-300 z-[101]"
+              onClick={goToNext}
+              aria-label="Next image"
+            >
+              &#8250;
+            </button>
+          </>
+        )}
 
         <div className="relative w-auto h-auto max-w-[90vw] max-h-[85vh] flex items-center justify-center">
             <img
@@ -105,13 +117,6 @@ const ImageLightbox: React.FC<ImageLightboxProps> = ({ images, startIndex, onClo
             />
         </div>
 
-        <button
-          className="absolute right-0 md:right-10 text-white p-4 text-4xl hover:bg-white/10 rounded-full transition-all duration-300 z-[101]"
-          onClick={goToNext}
-          aria-label="Next image"
-        >
-          &#8250;
-        </button>
       </div>
 
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white bg-black/50 px-3 py-1 rounded-full text-sm z-[101]">

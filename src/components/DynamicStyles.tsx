@@ -1,3 +1,4 @@
+
 import React, { useContext } from 'react';
 import { AppContext } from '../contexts/AppContext';
 import { PRESET_THEMES } from '../constants';
@@ -37,8 +38,8 @@ const DynamicStyles: React.FC = () => {
   const { content, themeMode } = context;
   const { themes, activeTheme } = content;
 
-  const currentTheme = themes.find(t => t.name === activeTheme) || themes.find(t=>t.name === 'Default') || PRESET_THEMES[0];
   const defaultTheme = PRESET_THEMES.find(t => t.name === 'Default') || PRESET_THEMES[0];
+  const currentTheme = themes.find(t => t.name === activeTheme && !t.deletedOn) || defaultTheme;
 
   const palette = {
       ...defaultTheme[themeMode],

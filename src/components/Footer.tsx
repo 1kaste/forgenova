@@ -1,3 +1,4 @@
+
 import React, { useContext } from 'react';
 import { AppContext } from '../contexts/AppContext';
 import AdminTrigger from './AdminTrigger';
@@ -7,7 +8,7 @@ const Footer: React.FC = () => {
   if (!context) return null;
 
   const { content, activeServiceId, setActiveServiceId, showPortfolio, setShowPortfolio, showAboutPage, setShowAboutPage } = context;
-  const { footer, contact } = content;
+  const { footer, contact, socials } = content;
 
   const handleNavClick = (hash: string) => (e: React.MouseEvent) => {
     e.preventDefault();
@@ -41,6 +42,8 @@ const Footer: React.FC = () => {
       scrollToTarget();
     }
   };
+  
+  const visibleSocials = socials.filter(s => !s.deletedOn);
 
   return (
     <footer className="bg-footer text-footer-foreground">
@@ -74,7 +77,7 @@ const Footer: React.FC = () => {
            <div>
             <h3 className="font-heading text-xl font-bold text-footer-foreground mb-4">Follow Us</h3>
             <div className="flex items-center gap-4">
-              {content.socials.filter(s => !s.deletedOn).map(social => (
+              {visibleSocials.map(social => (
                 <a key={social.id} href={social.url} target="_blank" rel="noopener noreferrer" className="hover:text-accent transition-colors" aria-label={social.name}>
                   <div
                       className="w-6 h-6 bg-current"

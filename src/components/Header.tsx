@@ -1,3 +1,4 @@
+
 import React, { useContext, useState, useEffect } from 'react';
 import { AppContext } from '../contexts/AppContext';
 
@@ -66,15 +67,16 @@ const Header: React.FC = () => {
 
   const navItems = ['Home', 'About Us', 'Our Services', 'Portfolio'];
   const logoUrl = themeMode === 'dark' ? logo.dark : logo.light;
+  const visibleSocials = socials.filter(s => !s.deletedOn);
 
   return (
     <header className="sticky top-0 z-40">
       <div className="bg-header-top-bar text-header-top-bar-foreground text-xs sm:text-sm py-2">
         <div className="container mx-auto px-6 flex justify-between items-center">
           <div className="flex items-center gap-4">
-            <span className="hidden sm:inline">Follow us:</span>
+            {visibleSocials.length > 0 && <span className="hidden sm:inline">Follow us:</span>}
             <div className="flex items-center gap-3">
-              {socials.filter(s => !s.deletedOn).map(social => (
+              {visibleSocials.map(social => (
                 <a key={social.id} href={social.url} target="_blank" rel="noopener noreferrer" className="hover:text-accent transition-colors" aria-label={social.name}>
                   <div
                     className="w-5 h-5 bg-current"

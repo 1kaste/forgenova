@@ -1,5 +1,4 @@
 
-
 import React, { useContext, useState } from 'react';
 import { AppContext } from '../contexts/AppContext';
 import ImageLightbox from './ImageLightbox';
@@ -19,11 +18,11 @@ const Portfolio: React.FC = () => {
     const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
 
     const allImages = content.services
-        .filter(service => !service.deletedOn)
-        .flatMap(service => service.gallery.map(img => ({
-            src: img,
-            title: service.title,
-        })));
+      .filter(service => !service.deletedOn)
+      .flatMap(service => service.gallery.map(img => ({
+        src: img,
+        title: service.title,
+    })));
     
     const handleImageClick = (index: number) => {
         setSelectedImageIndex(index);
@@ -41,13 +40,6 @@ const Portfolio: React.FC = () => {
 
     return (
         <article id="portfolio" className="bg-background animate-fade-in">
-            <style>{`
-                .aspect-w-1 { position: relative; padding-bottom: 100%; }
-                .aspect-h-1 { /* For 1:1 ratio */ }
-                .aspect-w-4 { position: relative; padding-bottom: 75%; }
-                .aspect-h-3 { /* For 4:3 ratio */ }
-                .aspect-w-1 > *, .aspect-w-4 > * { position: absolute; height: 100%; width: 100%; top: 0; right: 0; bottom: 0; left: 0; }
-            `}</style>
             <div className="container mx-auto px-6 py-12 md:py-20">
                 <div className="max-w-6xl mx-auto">
                     <button 
@@ -63,7 +55,7 @@ const Portfolio: React.FC = () => {
                         {allImages.map((image, index) => (
                             <div 
                                 key={index} 
-                                className="group rounded-lg overflow-hidden shadow-lg aspect-w-4 aspect-h-3 relative bg-card cursor-pointer"
+                                className="group rounded-lg overflow-hidden shadow-lg aspect-[4/3] relative bg-card cursor-pointer"
                                 onClick={() => handleImageClick(index)}
                                 onKeyDown={(e) => { if (e.key === 'Enter') handleImageClick(index); }}
                                 tabIndex={0}

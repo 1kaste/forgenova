@@ -1,6 +1,5 @@
 
-
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { AppContext } from '../contexts/AppContext';
 import ImageLightbox from './ImageLightbox';
 
@@ -12,16 +11,22 @@ const BackArrowIcon = () => (
 
 const ServiceDetail: React.FC = () => {
   const context = useContext(AppContext);
-  if (!context) return null;
-
-  const { activeServiceId, setActiveServiceId, content, setIsLightboxOpen } = context;
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
 
-  const service = content.services.find(s => s.id === activeServiceId);
+  if (!context) return null;
+  const { activeServiceId, setActiveServiceId, content, setIsLightboxOpen } = context;
+
+  const service = content.services.find(s => s.id === activeServiceId && !s.deletedOn);
+
+  // If service is not found (e.g., deleted while viewing), go back to services list
+  useEffect(() => {
+    if (activeServiceId !== null && !service) {
+      setActiveServiceId(null);
+    }
+  }, [activeServiceId, service, setActiveServiceId]);
 
   if (!service) {
-    // setActiveServiceId(null); This can cause render loops if service disappears from content update
     return null;
   }
   
@@ -66,13 +71,14 @@ const ServiceDetail: React.FC = () => {
                   <BackArrowIcon />
                 </button>
                 
+                <h1 className="font-heading text-5xl font-bold text-primary mb-4">{service.title}</h1>
                 <p className="text-lg max-w-3xl mb-12 text-muted-foreground">{service.longDescription}</p>
 
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
                 {service.gallery.map((imgSrc, index) => (
                     <div 
                         key={index} 
-                        className="group rounded-lg overflow-hidden shadow-lg aspect-w-1 aspect-h-1 cursor-pointer"
+                        className="group rounded-lg overflow-hidden shadow-lg aspect-[4/3] cursor-pointer"
                         onClick={() => handleImageClick(index)}
                         onKeyDown={(e) => { if (e.key === 'Enter') handleImageClick(index); }}
                         tabIndex={0}

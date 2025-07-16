@@ -1,5 +1,4 @@
 
-
 import React, { useContext } from 'react';
 import { AppContext } from '../contexts/AppContext';
 
@@ -29,9 +28,17 @@ const About: React.FC = () => {
                     <h1 className="text-4xl md:text-5xl font-heading font-bold mb-8 text-foreground">
                         About {content.companyName}
                     </h1>
-                    <p className="text-lg text-muted-foreground leading-relaxed">
-                        {content.footer.about}
-                    </p>
+                    <div className="prose prose-lg dark:prose-invert max-w-none text-muted-foreground leading-relaxed space-y-4">
+                        <p>
+                            {content.footer.about}
+                        </p>
+                        <p>
+                            {content.hero.subheading}
+                        </p>
+                        <p>
+                            Our commitment to excellence is forged in steel. We leverage cutting-edge technology and time-honored techniques to ensure every project meets the highest standards of quality, safety, and durability. From initial consultation to final installation, our expert team works closely with you to bring your vision to life.
+                        </p>
+                    </div>
                 </div>
             </div>
         </article>

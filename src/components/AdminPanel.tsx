@@ -1,3 +1,4 @@
+
 import React, { useContext, useState, useEffect, useRef } from 'react';
 import { AppContext } from '../contexts/AppContext';
 import { AuthLevel, SiteContent, ServiceCardData, ThemeOptions, ThemePalette, SocialLink } from '../types';
@@ -44,7 +45,7 @@ const TrashIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg {...props} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
 );
 
-// --- Admin Panel UI Components ---
+// --- Admin Panel UI Components & Helpers ---
 
 const Input = ({ label, value, onChange, ...props }: {label: string, value: string | number, onChange: (e: React.ChangeEvent<HTMLInputElement>) => void, [key:string]: any}) => (
     <div>
@@ -65,7 +66,7 @@ const ColorInput = ({ label, value, onChange }: { label: string, value: string, 
       <label className="text-sm text-muted-foreground capitalize">{label.replace(/-/g, ' ')}</label>
       <div className="flex items-center gap-2">
         <input type="text" value={value} onChange={onChange} className="w-24 p-1 text-sm border rounded bg-input text-foreground border-border" />
-        <input type="color" value={value} onChange={onChange} className="w-8 h-8 p-0 border-none rounded cursor-pointer bg-transparent" />
+        <input type="color" value={value || '#000000'} onChange={onChange} className="w-8 h-8 p-0 border-none rounded cursor-pointer bg-transparent" />
       </div>
     </div>
 );
@@ -113,7 +114,7 @@ const ThemeEditor = ({ theme, index, handleThemeNameChange, handleThemePropChang
                 <ColorInput 
                     key={`${mode}-${key}`} 
                     label={key}
-                    value={fullPalette[key] || '#000000'}
+                    value={fullPalette[key] || ''}
                     onChange={e => handleThemePropChange(index, mode, key, e.target.value)} 
                 />
             ))}
@@ -192,7 +193,7 @@ const ThemeCard = ({ theme, isActive, onActivate, onEdit, onDelete, draggable, o
 };
 
 const AddThemeCard = ({ onAdd }: { onAdd: () => void }) => (
-    <button onClick={onAdd} className="bg-card p-4 rounded-lg border-2 border-dashed border-border hover:border-primary transition-all flex flex-col items-center justify-center min-h-[140px] text-muted-foreground hover:text-primary">
+    <button onClick={onAdd} className="bg-card p-4 rounded-lg border-2 border-dashed border-border hover:border-primary transition-all flex flex-col items-center justify-center min-h-[164px] text-muted-foreground hover:text-primary">
         <span className="text-5xl font-thin">+</span>
         <span className="font-bold">Add New Theme</span>
     </button>
@@ -208,6 +209,10 @@ const highlightNewItem = (id: string, scroll: boolean = true) => {
         }
     }, 100);
 };
+
+const confirmAction = (message: string): boolean => {
+    return window.confirm(message);
+}
 
 // --- Main AdminPanel Component ---
 
@@ -230,8 +235,7 @@ const AdminPanel: React.FC = () => {
     
     const [editingThemeIndex, setEditingThemeIndex] = useState<number | null>(null);
 
-    const newlyAddedServiceId = useRef<number | null>(null);
-    const newlyAddedSocialId = useRef<number | null>(null);
+    const newlyAddedItemId = useRef<{type: string, id: number} | null>(null);
     const successTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const themeEditorRef = useRef<HTMLDivElement>(null);
 
@@ -247,7 +251,7 @@ const AdminPanel: React.FC = () => {
     useEffect(() => {
         if (context?.content) {
             setEditedContent(JSON.parse(JSON.stringify(context.content)));
-            setIsDirty(false); // Reset dirty state when content is reloaded
+            setIsDirty(false);
         }
     }, [context?.content]);
     
@@ -270,24 +274,25 @@ const AdminPanel: React.FC = () => {
     }, [editingThemeIndex]);
 
     useEffect(() => {
-        if (activeTab === 'services' && newlyAddedServiceId.current !== null && editedContent?.services) {
-            const serviceExists = editedContent.services.some(s => s.id === newlyAddedServiceId.current);
-            if (serviceExists) {
-                highlightNewItem(`service-admin-card-${newlyAddedServiceId.current}`);
-                newlyAddedServiceId.current = null;
-            }
+        if (!newlyAddedItemId.current) return;
+
+        const { type, id } = newlyAddedItemId.current;
+        let elementId = '';
+        let tab = '';
+
+        if (type === 'service') {
+            elementId = `service-admin-card-${id}`;
+            tab = 'services';
+        } else if (type === 'social') {
+            elementId = `social-admin-card-${id}`;
+            tab = 'contact';
         }
-    }, [editedContent?.services, activeTab]);
-    
-    useEffect(() => {
-        if (activeTab === 'contact' && newlyAddedSocialId.current !== null && editedContent?.socials) {
-           const socialExists = editedContent.socials.some(s => s.id === newlyAddedSocialId.current);
-           if (socialExists) {
-             highlightNewItem(`social-admin-card-${newlyAddedSocialId.current}`);
-             newlyAddedSocialId.current = null;
-           }
+
+        if (activeTab === tab && elementId) {
+            highlightNewItem(elementId);
+            newlyAddedItemId.current = null;
         }
-    }, [editedContent?.socials, activeTab]);
+    }, [activeTab, editedContent]);
 
     if (!context) return null;
     const { 
@@ -300,8 +305,7 @@ const AdminPanel: React.FC = () => {
 
     const handleLogin = (e: React.FormEvent) => {
         e.preventDefault();
-        const masterLogin = login(password); // login handles both dev and admin
-        if(masterLogin){
+        if (login(password)) {
             setError('');
             setPassword('');
         } else {
@@ -323,6 +327,35 @@ const AdminPanel: React.FC = () => {
           successTimerRef.current = setTimeout(() => { setShowSuccessMessage(false); }, 3000);
         }
     };
+    
+    const handleTrashAction = (
+        action: 'move' | 'restore' | 'delete', 
+        itemType: 'service' | 'theme' | 'social' | 'galleryImage', 
+        ids: any, 
+        itemName: string
+    ) => {
+      let message = '';
+      let performAction = () => {};
+
+      switch(action) {
+        case 'move':
+          message = `Are you sure you want to move ${itemName} to the trash? This is a temporary action and can be undone from the trash.`;
+          performAction = () => moveItemToTrash(itemType, ids);
+          break;
+        case 'restore':
+          // No confirmation needed for restore
+          restoreItemFromTrash(itemType, ids);
+          return;
+        case 'delete':
+          message = `This action is permanent and cannot be undone. Are you sure you want to delete ${itemName} forever?`;
+          performAction = () => permanentlyDeleteItemFromTrash(itemType, ids);
+          break;
+      }
+      
+      if (confirmAction(message)) {
+        performAction();
+      }
+    };
 
     const handleContentChange = <K extends keyof SiteContent>(key: K, value: SiteContent[K]) => {
       setEditedContent(prev => prev ? { ...prev, [key]: value } : null);
@@ -339,39 +372,39 @@ const AdminPanel: React.FC = () => {
       setIsDirty(true);
     };
 
-    const handleServiceChange = (id: number, field: keyof Omit<ServiceCardData, 'id'>, value: string | string[]) => {
-      setEditedContent(prev => {
-        if (!prev) return null;
-        return { ...prev, services: prev.services.map(s => s.id === id ? { ...s, [field]: value } : s) };
-      });
-      setIsDirty(true);
-    };
-    
-    const handleGalleryImageDelete = (serviceId: number, imageIndex: number) => {
-        if (window.confirm('Are you sure you want to move this image to the trash? This is a temporary action and can be undone from the trash.')) {
-            moveItemToTrash('galleryImage', { serviceId, imageIndex });
-        }
+    const handleServiceChange = (id: number, field: keyof Omit<ServiceCardData, 'id' | 'gallery' | 'deletedOn' | 'deletedGallery'>, value: string) => {
+        setEditedContent(prev => {
+            if (!prev) return null;
+            const newServices = prev.services.map(s => s.id === id ? { ...s, [field]: value } : s);
+            return { ...prev, services: newServices };
+        });
+        setIsDirty(true);
     };
 
+    const handleSocialChange = (id: number, field: keyof Omit<SocialLink, 'id' | 'deletedOn'>, value: string) => {
+        setEditedContent(prev => {
+            if (!prev) return null;
+            const newSocials = prev.socials.map(s => s.id === id ? { ...s, [field]: value } : s);
+            return { ...prev, socials: newSocials };
+        });
+        setIsDirty(true);
+    };
+    
     const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>, mode: 'light' | 'dark') => {
         const file = e.target.files?.[0];
         if (!file) return;
         const reader = new FileReader();
-        reader.onloadend = () => {
-            handleNestedContentChange('logo', mode, reader.result as string);
-        };
+        reader.onloadend = () => { handleNestedContentChange('logo', mode, reader.result as string); };
         reader.readAsDataURL(file);
     };
 
     const handleAddService = () => {
-        setEditedContent(prev => {
-            if (!prev) return null;
-            const newId = (prev.services.length > 0 ? Math.max(...prev.services.map(s => s.id)) : 0) + 1;
-            newlyAddedServiceId.current = newId;
-            const newService: ServiceCardData = { id: newId, title: 'New Service', description: 'A short description.', longDescription: 'A more detailed description.', image: `https://picsum.photos/400/300?random=${newId}`, gallery: [], };
-            return { ...prev, services: [...prev.services, newService] };
-        });
-        setIsDirty(true);
+      if (!editedContent) return;
+      const newId = (editedContent.services.length > 0 ? Math.max(...editedContent.services.map(s => s.id)) : 0) + 1;
+      newlyAddedItemId.current = {type: 'service', id: newId};
+      const newService: ServiceCardData = { id: newId, title: 'New Service', description: 'A short description.', longDescription: 'A more detailed description.', image: `https://picsum.photos/400/300?random=${newId}`, gallery: [], };
+      setEditedContent(prev => prev ? { ...prev, services: [...prev.services, newService] } : null);
+      setIsDirty(true);
     };
 
     const handleAddImageFromUrl = (serviceId: number) => {
@@ -428,45 +461,30 @@ const AdminPanel: React.FC = () => {
         const newThemeName = `New Theme ${editedContent.themes.length + 1}`;
         const newTheme: ThemeOptions = { name: newThemeName, light: {}, dark: {} };
         const newIndex = editedContent.themes.length;
-        setEditedContent(prev => {
-            if (!prev) return null;
-            return { ...prev, themes: [...prev.themes, newTheme] };
-        });
+        setEditedContent(prev => prev ? { ...prev, themes: [...prev.themes, newTheme] } : null);
         setEditingThemeIndex(newIndex);
         setIsDirty(true);
     };
 
     const handleEditTheme = (index: number) => { setEditingThemeIndex(index); };
     
-    const handleSocialLinkChange = (id: number, field: keyof Omit<SocialLink, 'id'>, value: string) => {
-        setEditedContent(prev => {
-            if (!prev) return null;
-            return { ...prev, socials: prev.socials.map(s => s.id === id ? { ...s, [field]: value } : s) };
-        });
-        setIsDirty(true);
-    };
-
     const handleSocialIconUpload = (e: React.ChangeEvent<HTMLInputElement>, id: number) => {
       const file = e.target.files?.[0];
       if (!file) return;
-
       if (file.size > 1024 * 100) { alert('File is too large. Please upload an icon smaller than 100KB.'); return; }
-      
       const reader = new FileReader();
-      reader.onloadend = () => { handleSocialLinkChange(id, 'iconUrl', reader.result as string); };
+      reader.onloadend = () => { handleSocialChange(id, 'iconUrl', reader.result as string) };
       reader.readAsDataURL(file);
       e.target.value = '';
     };
 
     const handleAddSocialLink = () => {
-        setEditedContent(prev => {
-            if (!prev) return null;
-            const newId = (prev.socials.length > 0 ? Math.max(...prev.socials.map(s => s.id)) : 0) + 1;
-            newlyAddedSocialId.current = newId;
-            const defaultIcon = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/></svg>`;
-            const newLink: SocialLink = { id: newId, name: 'New Social', url: 'https://', iconUrl: defaultIcon };
-            return { ...prev, socials: [...prev.socials, newLink] };
-        });
+        if (!editedContent) return;
+        const newId = (editedContent.socials.length > 0 ? Math.max(...editedContent.socials.map(s => s.id)) : 0) + 1;
+        newlyAddedItemId.current = {type: 'social', id: newId};
+        const defaultIcon = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/></svg>`;
+        const newLink: SocialLink = { id: newId, name: 'New Social', url: 'https://', iconUrl: defaultIcon };
+        setEditedContent(prev => prev ? { ...prev, socials: [...prev.socials, newLink] } : null);
         setIsDirty(true);
     };
     
@@ -480,62 +498,44 @@ const AdminPanel: React.FC = () => {
         setIsOverTrash(false);
     };
     
-    const confirmAndMoveToTrash = (itemType: any, ids: any, itemName: string) => {
-        if (window.confirm(`Are you sure you want to move ${itemName} to the trash? This is a temporary action and can be undone from the trash.`)) {
-            moveItemToTrash(itemType, ids);
-        }
-    };
-
     const handleDrop = (e: React.DragEvent) => {
         e.preventDefault();
         const data = JSON.parse(e.dataTransfer.getData('application/json'));
-
         if (!content) return;
-
         const { itemType } = data;
-        let itemName = '';
-
+        let itemName = 'this item';
         if (itemType === 'theme') {
             const theme = content.themes[data.themeIndex];
-            if (theme.name === content.activeTheme) {
-                alert("You cannot delete the currently active theme.");
-                setIsOverTrash(false);
-                setIsDragging(false);
-                return;
-            }
+            if (theme.name === content.activeTheme) { alert("You cannot delete the currently active theme."); setIsOverTrash(false); setIsDragging(false); return; }
             itemName = `the theme "${theme.name}"`;
         } else if (itemType === 'service') {
             const service = content.services.find(s => s.id === data.itemId);
-            itemName = `the service "${service?.title}"`;
+            if (service) itemName = `the service "${service.title}"`;
         } else if (itemType === 'social') {
             const social = content.socials.find(s => s.id === data.itemId);
-            itemName = `the social link "${social?.name}"`;
+            if(social) itemName = `the social link "${social.name}"`;
         } else if (itemType === 'galleryImage') {
             itemName = 'this gallery image';
         }
-        
-        confirmAndMoveToTrash(itemType, data, itemName || 'this item');
+        handleTrashAction('move', itemType, data, itemName);
         setIsOverTrash(false);
         setIsDragging(false);
     };
     
     const formatTimeLeft = (deletedOn: number) => {
-        const AUTO_DELETE_DURATION = 30 * 24 * 60 * 60 * 1000; // 30 days
+        const AUTO_DELETE_DURATION = 30 * 24 * 60 * 60 * 1000;
         const timeLeftMs = (deletedOn + AUTO_DELETE_DURATION) - currentTime;
-        if (timeLeftMs <= 0) return "Auto-deleting soon...";
-        
+        if (timeLeftMs <= 0) return "Expired";
         const days = Math.floor(timeLeftMs / (1000 * 60 * 60 * 24));
         const hours = Math.floor((timeLeftMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-
         if (days > 0) return `${days}d ${hours}h left`;
-        
         const minutes = Math.floor((timeLeftMs % (1000 * 60 * 60)) / (1000 * 60));
         if (hours > 0) return `${hours}h ${minutes}m left`;
         if (minutes > 0) return `${minutes}m left`;
-        return "less than a minute left";
+        return "less than 1m left";
     };
 
-    if (!editedContent) return null; // Or a loading spinner
+    if (!editedContent) return <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center text-white">Loading Editor...</div>;
     
     const trashedItemsCount = (content.services?.filter(s => s.deletedOn).length || 0) +
                            (content.themes?.filter(t => t.deletedOn).length || 0) +
@@ -628,7 +628,6 @@ const AdminPanel: React.FC = () => {
                             </div>
                            </div>
                         </div>
-
                          <div className="bg-card p-6 rounded-lg border border-border shadow-md">
                            <h3 className="text-xl font-bold text-card-foreground border-b border-border pb-3 mb-6">Hero Section</h3>
                            <div className="space-y-6">
@@ -644,14 +643,14 @@ const AdminPanel: React.FC = () => {
                         <div className="bg-card p-6 rounded-lg border border-border shadow-md">
                             <h3 className="text-xl font-bold text-card-foreground border-b border-border pb-3 mb-6">Theme Management</h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                                {editedContent.themes.map((theme, index) => !theme.deletedOn && (
+                                {editedContent.themes.filter(t => !t.deletedOn).map((theme, index) => (
                                     <ThemeCard
                                         key={`${index}-${theme.name}`}
                                         theme={theme}
                                         isActive={theme.name === editedContent.activeTheme}
                                         onActivate={() => handleContentChange('activeTheme', theme.name)}
                                         onEdit={() => handleEditTheme(index)}
-                                        onDelete={() => confirmAndMoveToTrash('theme', { themeIndex: index }, `the "${theme.name}" theme`)}
+                                        onDelete={() => handleTrashAction('move', 'theme', { themeIndex: index }, `the "${theme.name}" theme`)}
                                         draggable={theme.name !== editedContent.activeTheme}
                                         onDragStart={(e) => handleDragStart(e, 'theme', { themeIndex: index })}
                                         onDragEnd={handleDragEnd}
@@ -695,7 +694,7 @@ const AdminPanel: React.FC = () => {
                                 <button onClick={handleAddSocialLink} className="bg-primary text-primary-foreground text-sm font-bold py-1 px-3 rounded hover:bg-opacity-90">Add New</button>
                             </div>
                             <div className="space-y-6">
-                                {editedContent.socials.map((social) => !social.deletedOn &&(
+                                {editedContent.socials.filter(s => !s.deletedOn).map((social) => (
                                     <div 
                                       key={social.id} 
                                       id={`social-admin-card-${social.id}`} 
@@ -705,20 +704,20 @@ const AdminPanel: React.FC = () => {
                                       className="relative bg-muted p-4 rounded-lg border border-border/50 transition-colors duration-2000 cursor-grab"
                                     >
                                         <button
-                                            onClick={() => confirmAndMoveToTrash('social', { itemId: social.id }, `the "${social.name}" social link`)}
+                                            onClick={() => handleTrashAction('move', 'social', { itemId: social.id }, `"${social.name}"`)}
                                             className="absolute top-2 right-2 text-muted-foreground hover:text-red-500 transition-colors p-1 rounded-full hover:bg-red-500/10"
                                             aria-label={`Move ${social.name} to trash`}
                                         >
                                             <TrashIcon className="h-4 w-4" />
                                         </button>
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                            <Input label="Name" value={social.name} onChange={e => handleSocialLinkChange(social.id, 'name', e.target.value)} />
-                                            <Input label="URL" value={social.url} onChange={e => handleSocialLinkChange(social.id, 'url', e.target.value)} />
+                                            <Input label="Name" value={social.name} onChange={e => handleSocialChange(social.id, 'name', e.target.value)} />
+                                            <Input label="URL" value={social.url} onChange={e => handleSocialChange(social.id, 'url', e.target.value)} />
                                         </div>
                                         <div className="mt-4">
                                           <label className="block text-sm font-medium text-muted-foreground mb-1">Icon (URL or Upload)</label>
                                           <div className="flex items-center gap-2">
-                                              <input type="text" placeholder="Enter image URL or upload file" className="w-full p-2 border rounded bg-input text-foreground border-border" value={social.iconUrl} onChange={e => handleSocialLinkChange(social.id, 'iconUrl', e.target.value)} />
+                                              <input type="text" placeholder="Enter image URL or upload file" className="w-full p-2 border rounded bg-input text-foreground border-border" value={social.iconUrl} onChange={e => handleSocialChange(social.id, 'iconUrl', e.target.value)} />
                                               <label className="flex-shrink-0 px-3 py-2 bg-input text-foreground rounded-lg cursor-pointer hover:bg-accent hover:text-accent-foreground text-sm font-medium">
                                                   <span>Upload</span>
                                                   <input type='file' className="hidden" accept="image/svg+xml,image/png,image/jpeg" onChange={e => handleSocialIconUpload(e, social.id)} />
@@ -777,7 +776,7 @@ const AdminPanel: React.FC = () => {
                                 <div className="pt-8">
                                     <div className="space-y-2">
                                        <p className="text-sm font-medium text-muted-foreground">Force Admin Password Reset</p>
-                                       <button onClick={() => {if(window.confirm('Are you sure?')){resetAdminPassword(); alert("Admin password has been reset to default.")}}} className="bg-red-500 text-white px-4 py-1 text-sm rounded">Reset Admin Password</button>
+                                       <button onClick={() => {if(confirmAction('Are you sure?')){resetAdminPassword(); alert("Admin password has been reset to default.")}}} className="bg-red-500 text-white px-4 py-1 text-sm rounded">Reset Admin Password</button>
                                     </div>
                                 </div>
                             </div>
@@ -791,7 +790,7 @@ const AdminPanel: React.FC = () => {
                         <button onClick={handleAddService} className="bg-primary text-primary-foreground py-2 px-4 rounded font-bold">Add New Service</button>
                     </div>
                     <div className="space-y-8">
-                    {editedContent.services.map(service => !service.deletedOn && (
+                    {editedContent.services.filter(s => !s.deletedOn).map(service => (
                         <div 
                             key={service.id} 
                             id={`service-admin-card-${service.id}`} 
@@ -801,7 +800,7 @@ const AdminPanel: React.FC = () => {
                             onDragEnd={handleDragEnd}
                         >
                             <button
-                                onClick={() => confirmAndMoveToTrash('service', { itemId: service.id }, `the "${service.title}" service`)}
+                                onClick={() => handleTrashAction('move', 'service', { itemId: service.id }, `the "${service.title}" service`)}
                                 className="absolute top-4 right-4 text-muted-foreground hover:text-red-500 transition-colors p-2 rounded-full hover:bg-red-500/10"
                                 aria-label={`Move ${service.title} to trash`}
                             >
@@ -829,7 +828,7 @@ const AdminPanel: React.FC = () => {
                                         >
                                             <img src={imgSrc} alt="" className="w-full h-20 object-cover rounded" />
                                             <button
-                                                onClick={(e) => { e.stopPropagation(); handleGalleryImageDelete(service.id, index); }}
+                                                onClick={(e) => { e.stopPropagation(); handleTrashAction('move', 'galleryImage', { serviceId: service.id, imageIndex: index }, 'this gallery image')}}
                                                 className="absolute top-1 right-1 bg-black/50 text-white hover:bg-red-500 rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
                                                 aria-label="Move image to trash"
                                             >
@@ -853,7 +852,7 @@ const AdminPanel: React.FC = () => {
                 {activeTab === 'trash' && (
                   <div className="animate-fade-in">
                     <h3 className="text-2xl font-bold mb-6">Trash</h3>
-                    <p className="text-muted-foreground mb-6">Items in the trash will be permanently deleted after 30 days. You can also drag items to the trash icon to delete them.</p>
+                    <p className="text-muted-foreground mb-6">Items in the trash are available for 30 days before being removed. You can also drag items from other tabs to the trash icon to delete them.</p>
                     {trashedItemsCount === 0 ? (
                         <div className="text-center py-16 border-2 border-dashed border-border rounded-lg">
                             <TrashCanIcon className="w-16 h-16 mx-auto text-muted-foreground mb-4"/>
@@ -871,13 +870,12 @@ const AdminPanel: React.FC = () => {
                                     <ServicesIcon/>
                                     <div>
                                         <p className="font-bold">{item.title}</p>
-                                        <p className="text-xs text-muted-foreground">Service</p>
+                                        <p className="text-xs text-muted-foreground">Service | Expires in: {formatTimeLeft(item.deletedOn!)}</p>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-4">
-                                    <p className="text-sm text-yellow-400 w-28 text-right">{formatTimeLeft(item.deletedOn!)}</p>
-                                    <button onClick={() => { restoreItemFromTrash('service', { itemId: item.id }); }} className="flex items-center gap-1 text-sm text-green-400 hover:underline"><RestoreIcon className="h-4 w-4"/> Restore</button>
-                                    <button onClick={() => { if(window.confirm('This action is permanent and cannot be undone. Are you sure you want to delete this item forever?')) { permanentlyDeleteItemFromTrash('service', { itemId: item.id }); }}} disabled={!isDeletable} className="flex items-center gap-1 text-sm text-red-400 hover:underline disabled:text-gray-500 disabled:no-underline disabled:cursor-wait"><TrashIcon className="h-4 w-4"/> {isDeletable ? 'Delete Forever' : `Wait ${secondsLeft}s`}</button>
+                                    <button onClick={() => handleTrashAction('restore', 'service', { itemId: item.id }, '')} className="flex items-center gap-1 text-sm text-green-400 hover:underline"><RestoreIcon className="h-4 w-4"/> Restore</button>
+                                    <button onClick={() => handleTrashAction('delete', 'service', { itemId: item.id }, `the "${item.title}" service`)} disabled={!isDeletable} className="flex items-center gap-1 text-sm text-red-400 hover:underline disabled:text-gray-500 disabled:no-underline disabled:cursor-wait"><TrashIcon className="h-4 w-4"/> {isDeletable ? 'Delete Forever' : `Wait ${secondsLeft}s`}</button>
                                 </div>
                             </div>
                           );
@@ -892,13 +890,12 @@ const AdminPanel: React.FC = () => {
                                     <ThemeIcon/>
                                     <div>
                                         <p className="font-bold">{item.name}</p>
-                                        <p className="text-xs text-muted-foreground">Theme</p>
+                                        <p className="text-xs text-muted-foreground">Theme | Expires in: {formatTimeLeft(item.deletedOn!)}</p>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-4">
-                                    <p className="text-sm text-yellow-400 w-28 text-right">{formatTimeLeft(item.deletedOn!)}</p>
-                                    <button onClick={() => { restoreItemFromTrash('theme', { themeIndex: index }); }} className="flex items-center gap-1 text-sm text-green-400 hover:underline"><RestoreIcon className="h-4 w-4"/> Restore</button>
-                                    <button onClick={() => { if(window.confirm('This action is permanent and cannot be undone. Are you sure you want to delete this item forever?')) { permanentlyDeleteItemFromTrash('theme', { themeIndex: index }); }}} disabled={!isDeletable} className="flex items-center gap-1 text-sm text-red-400 hover:underline disabled:text-gray-500 disabled:no-underline disabled:cursor-wait"><TrashIcon className="h-4 w-4"/> {isDeletable ? 'Delete Forever' : `Wait ${secondsLeft}s`}</button>
+                                    <button onClick={() => handleTrashAction('restore', 'theme', { themeIndex: index }, '')} className="flex items-center gap-1 text-sm text-green-400 hover:underline"><RestoreIcon className="h-4 w-4"/> Restore</button>
+                                    <button onClick={() => handleTrashAction('delete', 'theme', { themeIndex: index }, `the "${item.name}" theme`)} disabled={!isDeletable} className="flex items-center gap-1 text-sm text-red-400 hover:underline disabled:text-gray-500 disabled:no-underline disabled:cursor-wait"><TrashIcon className="h-4 w-4"/> {isDeletable ? 'Delete Forever' : `Wait ${secondsLeft}s`}</button>
                                 </div>
                             </div>
                           );
@@ -913,13 +910,12 @@ const AdminPanel: React.FC = () => {
                                     <ContactIcon/>
                                     <div>
                                         <p className="font-bold">{item.name}</p>
-                                        <p className="text-xs text-muted-foreground">Social Link</p>
+                                        <p className="text-xs text-muted-foreground">Social Link | Expires in: {formatTimeLeft(item.deletedOn!)}</p>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-4">
-                                    <p className="text-sm text-yellow-400 w-28 text-right">{formatTimeLeft(item.deletedOn!)}</p>
-                                    <button onClick={() => { restoreItemFromTrash('social', { itemId: item.id }); }} className="flex items-center gap-1 text-sm text-green-400 hover:underline"><RestoreIcon className="h-4 w-4"/> Restore</button>
-                                    <button onClick={() => { if(window.confirm('This action is permanent and cannot be undone. Are you sure you want to delete this item forever?')) { permanentlyDeleteItemFromTrash('social', { itemId: item.id }); }}} disabled={!isDeletable} className="flex items-center gap-1 text-sm text-red-400 hover:underline disabled:text-gray-500 disabled:no-underline disabled:cursor-wait"><TrashIcon className="h-4 w-4"/> {isDeletable ? 'Delete Forever' : `Wait ${secondsLeft}s`}</button>
+                                    <button onClick={() => handleTrashAction('restore', 'social', { itemId: item.id }, '')} className="flex items-center gap-1 text-sm text-green-400 hover:underline"><RestoreIcon className="h-4 w-4"/> Restore</button>
+                                    <button onClick={() => handleTrashAction('delete', 'social', { itemId: item.id }, `the "${item.name}" link`)} disabled={!isDeletable} className="flex items-center gap-1 text-sm text-red-400 hover:underline disabled:text-gray-500 disabled:no-underline disabled:cursor-wait"><TrashIcon className="h-4 w-4"/> {isDeletable ? 'Delete Forever' : `Wait ${secondsLeft}s`}</button>
                                 </div>
                             </div>
                           );
@@ -934,13 +930,12 @@ const AdminPanel: React.FC = () => {
                                     <img src={item.url} alt="" className="w-10 h-10 object-cover rounded"/>
                                     <div>
                                         <p className="font-bold">Gallery Image</p>
-                                        <p className="text-xs text-muted-foreground">From: {service.title}</p>
+                                        <p className="text-xs text-muted-foreground">From: {service.title} | Expires in: {formatTimeLeft(item.deletedOn!)}</p>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-4">
-                                    <p className="text-sm text-yellow-400 w-28 text-right">{formatTimeLeft(item.deletedOn!)}</p>
-                                    <button onClick={() => { restoreItemFromTrash('galleryImage', { serviceId: service.id, imageIndex: index }); }} className="flex items-center gap-1 text-sm text-green-400 hover:underline"><RestoreIcon className="h-4 w-4"/> Restore</button>
-                                    <button onClick={() => { if(window.confirm('This action is permanent and cannot be undone. Are you sure you want to delete this item forever?')) { permanentlyDeleteItemFromTrash('galleryImage', { serviceId: service.id, imageIndex: index }); }}} disabled={!isDeletable} className="flex items-center gap-1 text-sm text-red-400 hover:underline disabled:text-gray-500 disabled:no-underline disabled:cursor-wait"><TrashIcon className="h-4 w-4"/> {isDeletable ? 'Delete Forever' : `Wait ${secondsLeft}s`}</button>
+                                    <button onClick={() => handleTrashAction('restore', 'galleryImage', { serviceId: service.id, imageIndex: index }, '')} className="flex items-center gap-1 text-sm text-green-400 hover:underline"><RestoreIcon className="h-4 w-4"/> Restore</button>
+                                    <button onClick={() => handleTrashAction('delete', 'galleryImage', { serviceId: service.id, imageIndex: index }, 'this image')} disabled={!isDeletable} className="flex items-center gap-1 text-sm text-red-400 hover:underline disabled:text-gray-500 disabled:no-underline disabled:cursor-wait"><TrashIcon className="h-4 w-4"/> {isDeletable ? 'Delete Forever' : `Wait ${secondsLeft}s`}</button>
                                 </div>
                             </div>
                           );
